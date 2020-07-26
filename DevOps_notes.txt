@@ -1,0 +1,901 @@
+Things to learn:
+
+Python
+Unix shell scripting
+Git
+
+#***************************************** TERRAFORM ***********************************************************************
+download:   
+	https://www.terraform.io/downloads.html
+	wget -q https://releases.hashicorp.com/terraform/0.11.6/terraform_0.11.6_linux_amd64.zip
+
+	mv terraform_0.11.6_linux_amd64.zip  /appl/fyers/download/
+
+setup:
+	vi .bash_profile
+
+	export PATH=$PATH:/appl/fyers/download
+
+	source ~/.bash_profile
+
+	terraform -v
+		Terraform v0.11.6
+
+	sudo mv /appl/fyers/download/terraform /usr/local/bin
+
+	terraform -install-autocomplete
+
+docker with terraform :
+	sudo yum install docker
+
+	mkdir terraform-docker-demo && cd $_
+
+#---------------------------------------------------
+terraform docker example:
+
+vi main.tf
+
+resource "docker_image" "nginx" {
+  name         = "nginx:latest"
+  keep_locally = false
+}
+
+resource "docker_container" "nginx" {
+  image = "docker_image:nginx:latest"
+  name  = "tutorial"
+  ports {
+	internal = 80
+	external = 8000
+  }
+}
+
+
+terraform init     # Initialize the project, which downloads a plugin that allows Terraform to interact with Docker
+
+terraform apply    # * provider.docker: Error pinging Docker server: Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+
+
+#-------------------------------------------------
+
+#******************************************* GIT *************************************************************
+
+
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+
+# -----------------------------------------------------------------------------------------
+
+Install:
+
+	sudo yum install git   # On Fedora, use yum.  
+	
+	$ sudo apt-get install git git-doc gitweb \
+	git-gui gitk git-email git-svn
+	
+	http://cygwin.com    #To install it, run Cygwin’s setup.exe program, which you can download from
+	
+Installing Git on Windows
+	There are two competing Git packages for Windows: a Cygwin-based Git and a “native”
+	version called msysGit.
+
+Things to know:
+	git branching and its use
+	
+git --version
+
+How to start:
+	cd /appl/adi/gitpractice/
+	git clone https://github.com/avdevops/avproject.git
+	cd avproject
+	git config user.name "Adinarayana Dadi"
+	git config user.email "adi3399@gmail.com"
+	./configure.sh
+	git start
+
+	Local VC: 
+	
+	centralized VC: check-in  ,check-out
+	
+	Destributed VC: 
+	
+	Multiple developers can work simulaltaneously on one project
+	
+	can have detailed logging of changes when it is required to revert the changes when application not working
+	
+	Backup of files when it is requested to go to Version 1 (downgrade)
+	
+	Practice:
+		sudo yum install git
+		
+		config:
+			git config --global user.name "Adinarayana Dadi"
+			
+			git config --global user.email "adi3399@gmail.com"
+			
+			git config --list
+		
+		set proxy:
+		
+			git config --global http.proxy proxy-url
+			
+			git config --global https.proxy proxy-url
+			
+		unset proxy:
+			git config --global --unset http.proxy
+			git config --global --unset https.proxy
+			
+		help:
+			git config -h
+			git config --help
+			
+		set editors:
+			https://swcarpentry.github.io/git-novice/02-setup/index.html
+			
+			git config --global core.editor "'c:/program files (x86)/sublime text 3/sublime_text.exe' -w"
+			
+		create git repoitory:
+		
+			$ cd /appl/adiprojects   # return to Desktop directory
+			$ cd planets     # go into planets directory, which is already a Git repository
+			$ ls -a          # ensure the .git subdirectory is still present in the planets directory
+			$ mkdir moons    # make a subdirectory planets/moons
+			$ cd moons       # go into moons subdirectory
+			$ git init       # make the moons subdirectory a Git repository
+			$ ls -a          # ensure the .git subdirectory is present indicating we have created a new Git repository
+			
+			cd ~/Desktop/planets
+			
+				[ec2-user@ip-172-31-7-106 /appl/adiprojects/planets]$
+
+			vi mars.txt			
+			
+				[ec2-user@ip-172-31-7-106 /appl/adiprojects/planets]$ git status
+				On branch master
+
+				No commits yet
+
+				Untracked files:
+				  (use "git add <file>..." to include in what will be committed)
+
+						mars.txt
+
+				nothing added to commit but untracked files present (use "git add" to track)
+				
+			git ls-files
+
+			git add mars.txt
+			
+				[ec2-user@ip-172-31-7-106 /appl/adiprojects/planets]$ git status
+				On branch master
+
+				No commits yet
+
+				Changes to be committed:
+				  (use "git rm --cached <file>..." to unstage)
+
+						new file:   mars.txt
+			
+			vi mars.txt
+			
+			git diff
+			
+			git add mars.txt     --- adds to staging area
+			
+			git commit -a -m "some messge"   OR git add mars.txt ; git commit -m ""
+			
+			git diff --staged
+			
+			git commit -m "Discuss concerns about Mars' climate for Mummy"
+			
+			git log -1 
+			
+			git log --oneline
+				
+			
+			git log --oneline --graph
+				ae08953 (HEAD -> master) first file
+				bd2222c Discuss concerns about Mars' climate for Mummy
+				5107966 Start notes on Mars as a base
+				
+			git show ae08953
+			
+			git rm venus.txt
+			git rm --cached venus.txt
+			
+			Undo:
+				
+				[ec2-user@ip-172-31-7-106 /appl/adiprojects/planets]$ git log --oneline
+						8fdfef0 (HEAD -> master) added ignore file
+						ae08953 first file
+						bd2222c Discuss concerns about Mars' climate for Mummy
+						5107966 Start notes on Mars as a base
+
+				git revert 8fdfef0
+				
+			head:
+				
+				git reset --hard bd2222c
+			
+			git branch
+				*master
+				
+			[ec2-user@ip-172-31-7-106 /appl/adiprojects/planets]$ git checkout -b b1
+				Switched to a new branch 'b1'
+				
+			git branch
+				* b1
+				  master
+
+			git status
+				On branch b1
+				nothing to commit, working tree clean
+			
+			git log --oneline b1
+			
+			parallel devepment with branching
+			
+			switch branch:
+			
+				git checkout master
+					
+					Switched to branch 'master'
+					
+			merge branch
+				git merge [source] [distination]
+				
+				git merge b1 [master]
+				
+				
+			-----
+			vi mars.txt
+			vi venus2.txt
+				
+			git stash
+				Saved working directory and index state WIP on master: efcd73d resolved conflict venus3.txt
+			git commit
+			
+			git status
+			
+			git stash list
+				stash@{0}: WIP on master: efcd73d resolved conflict venus3.txt
+			git show stash@{0}
+			
+			git stash pop stash@{0}
+			
+			git stash clear
+			
+			git stash -p     (partial stash)
+			
+			git stash pop stash@{0}
+			
+			git stash drop stash@{0}
+			
+
+		You can change the way Git recognizes and encodes line endings using the core.autocrlf command to git config. 
+		The following settings are recommended:
+
+			On macOS and Linux:   git config --global core.autocrlf input
+			On windows			: git config --global core.autocrlf true
+		
+		ask git not to track files
+			 
+			vi .gitignore
+				mars.txt
+				
+			
+	
+	Links :
+		https://swcarpentry.github.io/git-novice/02-setup/index.html
+		
+		
+	------------------------------
+	or create a new repository on the command line
+		echo "# planets" >> README.md
+		git init
+		git add README.md
+		git commit -m "first commit"
+		git remote add origin https://github.com/adi3399/planets.git
+		git push -u origin master
+	
+	…or push an existing repository from the command line
+		git remote add origin https://github.com/adi3399/planets.git
+		git push -u origin master
+		
+	…or import code from another repository
+		You can initialize this repository with code from a Subversion, Mercurial, or TFS project.
+	
+	 git pull
+	 
+	 git push -u origin master
+	 
+	 
+		git fetch --all
+		git reset --hard origin/master
+		git pull origin master
+
+	#--------------------------
+	git practice on 2020_07_26 :
+	
+		[adi@ip-172-31-14-233 /appl/adi/gitpractice/avproject]$ git init
+		[adi@ip-172-31-14-233 /appl/adi/gitpractice/avproject]$ ls -alrt
+		
+		[adi@ip-172-31-14-233 /appl/adi/gitpractice/avproject]$ git remote add origin https://github.com/avdevops/avproject.git
+		[adi@ip-172-31-14-233 /appl/adi/gitpractice/avproject]$ git pull
+		fatal: unable to access 'https://github.com/avdevops/avproject.git': Could not resolve proxy: proxy-url
+		
+		Sol:  git config --global --unset http.proxy
+		
+		git pull origin master
+		
+			If you wish to set tracking information for this branch you can do so with:
+
+			git branch --set-upstream-to=origin/<branch> master
+		
+		git clone "https://github.com/avdevops/avproject.git" "/appl/avproject"   # for git setup if no git origin
+	
+#******************************************* UNIX *************************************************************
+ 
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+	EC2 session timeout:
+		Amazon EC2 ssh timeout due inactivity
+			You can set a keep alive option in your ~/.ssh/config file on your computer's home dir:
+
+			ServerAliveInterval 50
+			
+				Amazon AWS usually drops your connection after only 60 seconds of inactivity, 
+				so this option will ping the server every 50 seconds and keep you connected indefinitely.
+				
+			echo 'ClientAliveInterval 60' | sudo tee --append /etc/ssh/sshd_config
+			
+			sudo service ssh restart
+			
+	add group:
+			sudo groupadd developers
+			
+			grep "^adi" /etc/passwd       # verify if user already exist
+			
+			sudo useradd venkat
+			sudo useradd adi
+			
+			usermod -g developers venkat   # change primary group of user
+			usermod -g developers adi   # change primary group of user
+			
+			useradd -G developers adi
+			
+			usermod -a -G developers adi    # worked command
+			usermod -a -G developers venkat
+			
+			sudo useradd –G developers adi		
+			
+			sudo useradd –g developers adi
+			OR
+			sudo adduser venkat developers    
+			
+			sudo usermod –a –G new_group,new_group2,new_group3 user_name
+			
+			sudo gpasswd –d user_name new_group    # remove user from group
+			
+			sudo groupdel venkat         # delete group
+			sudo groupdel adi         # delete group
+			
+			sudo cat /etc/group   # list groups
+			
+			groups              # display groups user belongs to 
+			
+			groups other_user   #display groups of a user
+			
+			id user_name
+			
+	password change:
+			sudo passwd new_user
+		
+	admin / sudo  access to user:
+		usermod -aG wheel adi     #To enable sudo for your user ID on RHEL, add your user ID to the wheel group
+		
+		id venkat
+			uid=1001(venkat) gid=1002(venkat) groups=1002(venkat),10(wheel),1001(developers)
+		
+		This works because the default /etc/sudoers file on RHEL contains the following line:
+		
+		%wheel  ALL=(ALL)  ALL
+
+	login to user:
+		passwd venkat    # set password
+		
+		su - venkat
+		
+	change group of folder:
+		[root@ip-172-31-14-233 /appl]$ chgrp developers /appl/adi
+		[root@ip-172-31-14-233 /appl]$ chgrp developers /appl/venkat		
+		
+		[root@ip-172-31-14-233 /appl]$ chown adi adi
+		[root@ip-172-31-14-233 /appl]$ chown venkat venkat
+		[root@ip-172-31-14-233 /appl]$ ls -ltr
+		total 0
+		drwxr-xr-x 4 ec2-user root       50 Apr 14 21:01 adiprojects
+		drwxr-xr-x 2 venkat   developers  6 Jul 26 20:54 venkat
+		drwxr-xr-x 2 adi      developers  6 Jul 26 20:54 adi
+	
+	change default home directory:
+			usermod -d /appl/venkat venkat
+			usermod -d /appl/adi adi
+		
+		copy .bash_profile to new home
+		
+			cp -rp /home/venkat/* /appl/venkat/
+			cp -rp /home/adi/* /appl/adi/
+		
+		su - adi
+		
+		vi .bash_profile
+			add line export PS1="[\u@\h \w]\$ " at end
+			
+# -----------------------------------------------------------------------------------------
+	ssh -i $HOME/keyfile.pem ec2-user@IP
+
+	auto start service 
+		chkconfig --list 
+
+			jenkins         0:off   1:off   2:off   3:on    4:off   5:on    6:off
+				runlevel 3, 5 on
+
+		chkconfig --list service_name
+
+		runlevel			
+			N 3
+
+		chkconfig jenkins off
+
+		chkconfig --list jenkins
+			jenkins         0:off   1:off   2:off   3:off   4:off   5:off   6:off
+
+
+	change timezone:
+	
+		cd /usr/share/zoneinfo/Asia
+		ln -s /usr/share/zoneinfo/Asia/Calcutta /etc/localtime
+	
+		[root@ip-172-31-7-106 /]$ cat /etc/sysconfig/clock
+			ZONE="UTC"
+			UTC=true
+		
+		zoneinfo:
+			cd /usr/share/zoneinfo
+			
+			vi /etc/sysconfig/clock
+				ZONE="Asia/Kolkata"				
+				UTC=true
+		
+		tzdata-update
+		
+		export PS1="[\u@\h \w]\$ "
+		
+		Configuring a different timezone for individual users
+			export TZ="/usr/share/zoneinfo/[timezone_directory]/[timezone_file]"
+
+#******************************************* UNIX SHELL *************************************************************
+for loop:
+--------------
+# using for loop
+echo "Using for loop method # 1... "
+for i in 1 2 3 4 5 6 7 8 9 10
+do
+  echo -n "$i " 
+done
+echo ""
+ 
+# this is much better as compare to above for loop
+echo "Using for loop method # 2... "
+for (( i=1; i<=10; i++ ))
+do
+   echo -n "$i "
+done
+echo ""
+ 
+# use of while loop
+echo "Using while loop..."
+j=1
+while [ $j -le 10 ]
+do
+   echo -n "$j "
+   j=$(( j + 1 )) # increase number by 1 
+done
+echo ""
+	
+array:
+-------------
+#!/bin/bash
+array=( A B C D E F G )
+echo "${array[0]}"
+echo "${array[1]}"
+	
+users=(John Harry Jake Scott Philis)
+for u in "${users[@]}"
+do
+	echo "$u is a registered user"
+done
+#******************************************* JENKINS ***************************************************************
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+
+# -----------------------------------------------------------------------------------------
+Continuous Integration
+
+	Installation:
+			sudo yum install jre-1.8.0
+			vi .bash_profile
+			
+			export JAVA_HOME=/usr/lib/jvm/jre-1.8.0
+			export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk.x86_64
+			export PATH=$PATH:$JAVA_HOME/bin
+			
+
+			
+			go to https://jenkins.io/download/
+			select centOS
+			
+			sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+			sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+			sudo yum install jenkins
+			
+			systemctl start jenkins  OR sudo service jenkins start
+			
+			update port 
+				vi /etc/sysconfig/jenkins
+					JENKINS_PORT="8080"   
+					to
+					JENKINS_PORT="8088"
+				
+			open browser and url http://13.232.134.137:8088
+			
+			manage jenkins -> manage users
+			
+			add job job1 with shell command   echo "good morning"
+			
+			click "build now", select build no #1  , click console output
+		
+	Security:
+		http://13.232.134.137:8088
+		
+		Manage jenkins - configure global security 
+		
+			Authorization
+				 Anyone can do anything 
+				 Legacy mode 
+				 Logged-in users can do anything 
+					Allow anonymous read access	 
+				 Matrix-based security 
+				 Project-based Matrix Authorization Strategy 
+
+		Matrix based security:
+			User has same permissions across all the jobs.
+			Manage jenkins - configure global security
+			
+			
+		Project based security:
+			User has different permissions for different jobs.
+			Manage jenkins - configure global security
+			
+				select project base security and add user and permisssion
+				
+				select a job and configure 
+					Enable project based security
+
+	PlugIns:
+		
+			Manage jenkins - Manage plugins
+				select available and search for junit
+				
+				search for audit and install audit trail  
+				
+			Manage jenkins - Configure system
+				go to audit trail
+					add logger  -- log file -- /tmp/jenkinsAudit.log  Log File Size   25    Log File Count 5
+				
+	Notifications:
+			if job2 to run after job1 success, but job1 failed. you require notification.
+			
+			manage jenkins - configure system
+				go to 	Extended E-mail Notification
+					SMTP server = smtp.gmail.com
+					
+				Advanced - enter email adi3399@gmail.com and pswd 
+					use SSL
+					default receipients
+					
+			select job - configure - post build action - editable email actions				
+				triggers
+		
+	schedule jobs:
+			
+			timer
+			poll scm
+			pipeline
+			
+			select job - configure - build triggers - build periodically  - */2 * * * *
+			
+		schedule when git file updated:
+			job - configure - Source Code Management - git  - url https://github.com/adi3399/planets.git
+				default dir /var/lib/jenkins  /workspace
+				/var/lib/jenkins/workspace/job1
+				
+						[ec2-user@ip-172-31-14-233 workspace]$ ls -ltr
+						total 0
+						drwxr-xr-x 2 jenkins jenkins 6 Apr 14 20:06 job1
+						drwxr-xr-x 2 jenkins jenkins 6 Apr 14 20:07 job2
+
+			job - configure - Build Triggers - poll SCM
+			
+	Delivery Pipeline:
+		https://github.com/edureka-git/DevOpsClassCodes
+		
+		new job : DevCompile
+			https://github.com/edureka-git/DevOpsClassCodes.git
+			
+		Manage jenkins - global tool configuration - Maven Configuration
+		
+		DevCompile job - Build - invoke top level maven targets
+		
+			cd /var/lib/jenkins/workspace/DevCompile/target/classes/com/edurekademo/utilities
+			ls -ltr
+				-rw-r--r-- 1 jenkins jenkins 1350 Apr 15 10:22 GenericComparator$CompareMode.class
+
+		
+		
+		job CodeReview - add git - build - maven - -P metrics pmd:pmd
+		
+			pmd documentation in google : search for pmd apache plugin   -- program mistake detector
+			
+				issue:
+						[WARNING] The requested profile "metrics" could not be activated because it does not exist.
+						[ERROR] Failed to execute goal org.apache.maven.plugins:maven-pmd-plugin:3.13.0:pmd (default-cli): Goal requires a project to execute but there is no POM in this directory (/var/lib/jenkins/workspace/CodeReview). Please verify you invoked Maven from the correct directory. -> [Help 1]
+						[ERROR] 
+						[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+						[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+						[ERROR] 
+						[ERROR] For more information about the errors and possible solutions, please read the following articles:
+						[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MissingProjectException
+						Build step 'Invoke top-level Maven targets' marked build as failure
+						Finished: FAILURE
+			
+			BUILD SUCCESS
+				http://13.234.4.252:8088/job/CodeReview/ws/target/pmd.xml
+				
+				generate xml report 
+				
+				to generate trend report --
+					post build action  - no option for pmd... so install plugin pmd
+						manage jenkins - manage plugins - install PMD
+						
+					job configure - post build action - publish PMD analysis results
+						pmd results  -  target/pmd.xml    path of pmd.xml report file
+						
+				build job - PMD Warning
+				
+		job Unit test:
+			https://github.com/edureka-git/DevOpsClassCodes.git
+			
+			build - mymaven  - goals test
+			
+			reports i --- target / surefire-reports 
+			
+			add post build -- junit -- target/surefire-reports/*.xml
+			
+			go to recent build and see test results
+			
+		job MetrikCheck
+			install cobertura plugin
+			cobertura:cobertura -Dcobertura.report.format=xml
+			
+			post build
+			target/site/cobertura/coverage.xml
+			
+			see coverage report
+			
+		job Package:
+			package  maven
+			addressbook.war in target to deploy
+			
+		
+	Connect jobs:
+		open first job devcompile - post build action - build other projects - add 2CodeReview
+		
+		check Downstream Projects
+		
+		open 2CodeReview, Build Triggers - build after other project are build - 1DevCompile
+							post build - build other jobs - 3UnitTest
+		
+		run first job - check dashboard
+		
+		pipeline view - manage jenkins - manage plugins - build pipeline
+		
+		go to dashboard - + icon - Build Pipeline View
+		
+	
+	Master - Slave:
+		manage jenkins - manage nodes - new node - Windows_Slave
+		
+#************************************** SELENIUM *********************************************************************
+Continuous testing - Selenium:
+	
+	open eclipse - go to file - new - java projet - selProj
+	seleniumhq.org  - download - Selenium Client & WebDriver Language Bindings - java
+		unzip download
+
+	select project properties - Java build path - libraries -  add external jars 
+
+	C:\Users\adi\Downloads\selenium-java-3.141.59 -- select jar files
+	C:\Users\adi\Downloads\selenium-java-3.141.59\libs -- select jar files  
+
+	select src - file - new - others - class - verify title - public static void main
+
+	on download page select apidocs  -- https://www.selenium.dev/selenium/docs/api/java/index.html  - webdriver
+
+	download driver - https://sites.google.com/a/chromium.org/chromedriver/
+
+#*********************************** DOCKER / KUBERNETES *****************************************************************
+Virtualization / Containerization
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+
+# -----------------------------------------------------------------------------------------
+
+	Container provides an environment to run the application. It is running instance of the image.
+
+	Docker composer - Docker compose file written in yaml - to make multiple containers to work together.
+	Provides consistent computing environment throughout software life cycle.
+
+	docker daemon, docker client
+
+
+		ec2-user@/appl ] $ cd /
+		ec2-user@/ ] $ cd docker
+		-bash: cd: docker: No such file or directory
+		ec2-user@/ ] $ ls
+		appl  bin  boot  cgroup  dev  etc  home  lib  lib64  local  lost+found  media  mnt  opt  proc  root  run  sbin  selinux  srv  sys  tmp  usr  var
+		ec2-user@/ ] $ docker images
+		Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+		ec2-user@/ ] $ sudo service docker start
+		root@/ ] $ docker images
+		REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+
+		docker run hello-world        # hello-world is image name
+
+		register in hub.docker.com
+			Docker ID 224455
+
+		root@/ ] $ docker ps
+		CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+		root@/ ] $ docker ps -a
+		CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                          PORTS               NAMES
+		c7723e938a19        hello-world         "/hello"            About a minute ago   Exited (0) About a minute ago                       beautiful_babbage
+		ead2430e3a7a        hello-world         "/hello"            3 minutes ago        Exited (0) 3 minutes ago                            angry_dubinsky
+		2156bcb9ff21        hello-world         "/hello"            6 minutes ago        Exited (0) 6 minutes ago                            brave_euler
+
+
+		root@/ ] $ docker run --name mycontainer1 hello-world
+		root@/ ] $ docker ps -a
+		CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+		ab951f64cd36        hello-world         "/hello"            46 seconds ago      Exited (0) 45 seconds ago                       mycontainer1
+
+		root@/ ] $ docker search ubuntu
+		NAME                                                      DESCRIPTION                                     STARS               OFFICIAL            AUTOMATED
+		ubuntu                                                    Ubuntu is a Debian-based Linux operating sys…   10858               [OK]
+		dorowu/ubuntu-desktop-lxde-vnc                            Docker image to provide HTML5 VNC interface …   420                                     [OK]
+		rastasheep/ubuntu-sshd                                    Dockerized SSH service, built on top of offi…   244                                     [OK]
+
+
+	registry (docker hub)
+		|
+	  repo( like images ) ubuntu (16 14)
+	  	|
+	  images   - stored in the form on tags (16 14)
+
+	 registry/username/repo:tag\
+
+	 	root@/ ] $ docker images
+		REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+		hello-world         latest              bf756fb1ae65        4 months ago        13.3kB
+
+	docker.io/hello-world:latest
+
+		docker pull devopstrainer/myrepo1:v1.0
+
+			Error response from daemon: pull access denied for devopstrainer/myrepo1
+
+		root@/ ] $ docker login
+			Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+			Username: 224455
+			Password:
+			WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+			Configure a credential helper to remove this warning. See
+			https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+			Login Succeeded
+
+	https://hub.docker.com/r/devopstrainer/myrepo2/tags
+
+		root@/ ] $ docker pull devopstrainer/myrepo2:v9.0
+		v9.0: Pulling from devopstrainer/myrepo2
+		3e17c6eae66c: Extracting [===================>                               ]  17.43MB/45.13MB
+		fdfb54153de7: Download complete
+		a4ca6e73242a: Download complete
+		93bd198d0a5f: Downloading [>                                                  ]  504.7kB/50.02MB
+		ca4d78fb08d6: Download complete
+
+		root@/ ] $ docker images
+		REPOSITORY              TAG                 IMAGE ID            CREATED             SIZE
+		hello-world             latest              bf756fb1ae65        4 months ago        13.3kB
+		devopstrainer/myrepo2   v9.0                3f08dc4f3f5d        2 years ago         809MB
+
+		root@/ ] $ docker run -itd ubuntu     # interactive terminal detached mode, adds the container, keep it up and running until you stop it, default mode
+
+		root@/ ] $ docker run -itd ubuntu
+		Unable to find image 'ubuntu:latest' locally
+		latest: Pulling from library/ubuntu
+		d51af753c3d3: Pull complete
+		fc878cd0a91c: Pull complete
+		6154df8ff988: Pull complete
+		fee5db0ff82f: Pull complete
+		
+		
+#********************************************* PUPPET *************************************************************
+Configuration Managerment
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+
+# -----------------------------------------------------------------------------------------
+
+#********************************************* ANSIBLE *************************************************************
+Configuration Managerment
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+
+# -----------------------------------------------------------------------------------------
+
+#********************************************* NAGIOS *************************************************************
+Monitoring 
+# -----------------------------------------------------------------------------------------
+
+Venkat notes:
+
+
+# -----------------------------------------------------------------------------------------
+
+
+
+#*********************************************** MYSQL *****************************************************************
+
+
+#********************************************* QUESTIONS ****************************************************
+
+jenkins:
+
+#********************************************* ROUBLESHOOTING ****************************************************
+
+Unix:
+
+		
+
+Git:
+
+		
+
+
+
+	
