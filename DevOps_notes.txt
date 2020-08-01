@@ -383,7 +383,7 @@ Venkat notes:
 			
 			sudo groupdel venkat         # delete group
 			sudo groupdel adi         # delete group
-			
+			sudo gpasswd -d venkar developers  (delete user from a group)
 			sudo cat /etc/group   # list groups
 			
 			groups              # display groups user belongs to 
