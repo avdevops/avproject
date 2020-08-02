@@ -404,6 +404,9 @@ Venkat notes:
 		This works because the default /etc/sudoers file on RHEL contains the following line:
 		
 		%wheel  ALL=(ALL)  ALL
+		
+		create a folder appl with root user mkdir /appl
+		go Inside appl folder and create 2 folders adi and venkat 
 
 	login to user:
 		passwd venkat    # set password
@@ -425,8 +428,11 @@ Venkat notes:
 	change default home directory:
 			usermod -d /appl/venkat venkat
 			usermod -d /appl/adi adi
+			
+			go to cd /home/venkat/
 		
 		copy .bash_profile to new home
+		cp -rp .bash_profile /appl/venkat
 		
 			cp -rp /home/venkat/* /appl/venkat/
 			cp -rp /home/adi/* /appl/adi/
